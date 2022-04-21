@@ -1,0 +1,185 @@
+set $super Mod4
+set $alt Mod1
+
+########
+# font #
+########
+font iosevka nerd 8
+
+#######
+# bar #
+#######
+#bar {
+#	position bottom
+#        colors {
+#        background #2f343f
+#        statusline #2f343f
+#        separator #4b5262
+#
+#        # colour of border, background, and text
+#        focused_workspace       #2f343f #bf616a #d8dee8
+#        active_workspace        #2f343f #2f343f #d8dee8
+#        inactive_workspace      #2f343f #2f343f #d8dee8
+#        urgent_workspacei       #2f343f #ebcb8b #2f343f
+#    }
+#        status_command i3status
+#}
+
+################
+# window rules #
+################
+new_window pixel 0
+new_float pixel 5
+gaps inner 20
+#smart_gaps on
+#smart_borders on
+
+##########
+# layout #
+##########
+#bindsym $super+h layout toggle split
+bindsym $super+f fullscreen toggle
+bindsym $super+s layout stacking
+bindsym $super+z layout tabbed
+bindsym $super+e layout toggle split
+bindsym $super+Shift+space floating toggle
+bindsym $super+Shift+v focus up, split v
+bindsym $super+Shift+h focus left, split h
+
+###############
+# kill window #
+###############
+bindsym $super+q kill
+
+#############
+# autostart #
+#############
+exec --no-startup-id picom -b
+exec --no-startup-id nitrogen --restore
+exec --no-startup-id dunst
+exec --no-startup-id cd ~/.config/polybar/ && ./launch.sh
+#exec --no-startup-id ~/.config/i3/bin/autostart.sh
+
+
+############
+# keybinds #
+############
+bindsym $super+w exec firefox
+bindsym $super+Shift+t exec thunar
+bindsym $super+Shift+d exec discord
+
+########
+# term #
+########
+bindsym $super+Return exec kitty
+
+################
+# dmenu & rofi #
+################
+bindsym $super+d exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Noto Sans:size=8'"
+#bindsym &super+d exec cd ~/.config/rofi/bin && ./launcher
+
+################
+# change focus #
+################
+
+#############################
+# Sreen brightness controls #
+#############################
+bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 5
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 3
+
+########################
+# Pulse Audio controls #
+########################
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+#############
+# workspace #
+#############
+set $ws1 term
+set $ws2 firefox
+set $ws3 thunar
+set $ws4 discord
+set $ws5 work
+
+#######################
+# Switch to workspace #
+#######################
+bindsym $super+1 workspace $ws1
+bindsym $super+2 workspace $ws2
+bindsym $super+3 workspace $ws3
+bindsym $super+4 workspace $ws4
+bindsym $super+5 workspace $ws5
+
+# Move focused container to workspace
+bindsym $super+Shift+1 move container to workspace $ws1
+bindsym $super+Shift+2 move container to workspace $ws2
+bindsym $super+Shift+3 move container to workspace $ws3
+# restart / exit i3 #
+#####################
+bindsym $super+Shift+r restart
+bindsym $super+Shift+q exec "i3-nagbar -t warning -m 'Really, exit?' -b 'Yes' 'i3-msg exit'"
+
+###########
+# theming #
+###########
+## class                 border  backgr. text    indicator child_border
+client.focused_inactive  #2f343f #2f343f #2f343f #2f343f   #2f343f
+client.unfocused         #2f343f #2f343f #2f343f #2f343f   #2f343f
+client.focused           #2f343f #2f343f #2f343f #2f343f   #2f343f
+
+#################
+# resize window #
+#################
+mode "resize" {
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $super+r mode "resize"
+
+set $mode_system system: lock(l), logout(e), suspend(s), hibernate(h), reboot(r), shutdown(Shift+s)
+mode "$mode_system" {
+    bindsym l exec --no-startup-id $locker, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym s exec --no-startup-id $locker && systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id $locker && systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+#bindsym $super+Shift+e mode "$mode_system"
+
+#██╗██████╗░░░░░░░░██████╗░░█████╗░██████╗░░██████╗  ░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
+#██║╚════██╗░░░░░░██╔════╝░██╔══██╗██╔══██╗██╔════╝  ██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░
+#██║░█████╔╝█████╗██║░░██╗░███████║██████╔╝╚█████╗░  ██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░
+#╚═╝╚═════╝░░░░░░░░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═════╝░  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
+#╚═╝╚═════╝░░░░░░░░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═════╝░  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
+#╚═╝╚═════╝░░░░░░░░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═════╝░  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
