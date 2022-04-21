@@ -1,6 +1,6 @@
 # description
 i3-gaps dotfiles with catpuccin
 
-#GTK theme
+# GTK theme
 https://github.com/catppuccin/gtk
 
